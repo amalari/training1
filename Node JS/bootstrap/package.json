@@ -1,0 +1,13 @@
+{
+  "name": "botstrap",
+  "description": "Second Express App",
+  "version": "0.0.1",
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "cookie-parser": "^1.3.5",
+    "cors": "^2.7.1",
+    "express": "*",
+    "express-handlebars": "^2.0.1"
+  },
+  "devDependencies": {}
+}
