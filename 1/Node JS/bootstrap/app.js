@@ -2,7 +2,19 @@
 var express = require('express'); //load express
 var handlebars = require('express-handlebars').create({ 
 	extname : '.html',
-	defaultLayout:'main' });
+	defaultLayout:'main',
+	helpers: {
+		section: function(name, options){
+			// console.log(!this._sections);
+			// console.log(name);
+			// console.log(option);
+			// console.log(this);
+			if(!this._sections) this._sections = {};
+			this._sections[name] = options.fn(this);
+			return null;
+		}
+	}
+});
 
 var app = express();
 
@@ -45,24 +57,40 @@ var getWeatherData = function(){
 		},
 		],
 	};
-}
+};
 
 
-
+//middleware for partials
 app.use(function(req, res, next){
-	if(!res.locals.partials) res.locals.partials = {};
-	res.locals.partials.weather = getWeatherData();
-	next();
+	//console.log(!res.locals.partialsData); //true
+	if(!res.locals.partialsData) res.locals.partialsData = {}; //make object of res.locals.partials
+	res.locals.partialsData.weather = getWeatherData(); //has value an Array
+	next(); //next to handler below
 });
 
-
+app.get('/test', function(req, res) {
+	res.render('jquery-test');
+});
 app.get('/', function(req, res) {
 	res.render('home');
+	// console.log(res.render('home'));
 });
 app.get('/about', function(req, res){
 	var randomFortune =
 	fortunes[Math.floor(Math.random() * fortunes.length)];
 	res.render('about', { fortune: randomFortune });
+});
+
+app.get('/nursery-rhyme', function(req, res){
+	res.render('nursery-rhyme');
+});
+app.get('/data/nursery-rhyme', function(req, res){
+	res.json({
+		animal: 'squirrel',
+		bodyPart: 'tail',
+		adjective: 'bushy',
+		noun: 'heck',
+	});
 });
 // 404 catch-all handler (middleware)
 app.use(function(req, res, next){
